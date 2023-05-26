@@ -40,3 +40,14 @@ def handler(req, resp):
     resp.text = "We don't have to use decorators!"
 
 app.add_route("/sample", handler)
+
+# To handle exceptions
+def custom_exception_handler(request, response, exception_cls):
+    response.body = app.template("error.html", context={"name": exception_cls, "title":"Lights cannot be turned on!"}).encode()
+
+
+app.add_exception_handler(custom_exception_handler)
+
+@app.route("/exception")
+def exception_throwing_handler(request, response):
+    raise AssertionError("Sorry, This handler should not be used")
