@@ -30,3 +30,13 @@ class BooksResource:
 
     def post(self, req, resp):
         resp.text = "Endpoint to create a book"
+
+@app.route("/template")
+def template_handler(req, resp):
+    resp.body = app.template("index.html", context={"name": "LumosWeb", "title":"Lights are on!"}).encode()
+
+## Adding a route without a decorator
+def handler(req, resp):
+    resp.text = "We don't have to use decorators!"
+
+app.add_route("/sample", handler)

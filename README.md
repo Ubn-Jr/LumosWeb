@@ -1,3 +1,3 @@
 ## LumosWeb
 
-- LumosWeb is "[Camping](https://github.com/camping/camping)" based microframework written in python
+- LumosWeb is web framework written in python

@@ -1,4 +1,7 @@
-**/lumos_venv
-**/__pycache__
-__pycache__
+LumosWeb/lumos_venv
 Notes.md
+
+**/__pycache__/
+**/.pytest_cache/
+**/.coverage
+**/.coveragerc
