@@ -1,4 +1,4 @@
-LumosWeb/lumos_venv
+**/lumos_venv
 Notes.md
 
 .vscode
@@ -7,3 +7,4 @@ Notes.md
 **/.pytest_cache/
 **/.coverage
 **/.coveragerc
+

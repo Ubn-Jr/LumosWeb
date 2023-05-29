@@ -40,7 +40,7 @@ class BooksResource:
 #     resp.body = app.template("index.html", context={"name": "LumosWeb", "title":"Lights are on!"}).encode()  # Now we dont need to encode the body, as we are doing it in the Response class
 
 ## Adding a route without a decorator
-def handler(req, resp, allowed_methods=["get", "post"]):
+def handler(req, resp):
     resp.text = "We don't have to use decorators!"
 
 app.add_route("/sample", handler, allowed_methods=["get", "post"])
