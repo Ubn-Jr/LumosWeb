@@ -5,7 +5,10 @@ app = API()
 
 @app.route("/home")
 def home(request, response):
-    response.text = "Hello from the HOME page"
+    if request.method == "get":
+        response.text = "Hello from the HOME page"
+    else:
+        raise AttributeError("Method not allowed.")
 
 @app.route("/lumos")
 def about(request, response):
