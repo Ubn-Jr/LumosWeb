@@ -173,3 +173,48 @@ def test_allowed_methods_for_function_based_handlers(api, client):
         client.get("http://testserver/home")
 
     assert client.post("http://testserver/home").text == "Hello"
+
+def test_json_response_helper(api, client):
+    @api.route("/json", allowed_methods=["get", "post"])
+    def json_handler(req, resp):
+        resp.json = {"name": "Lumos"}
+
+    response = client.get("http://testserver/json")
+    json_body = response.json()
+    assert response.headers["Content-Type"] == "application/json"
+    assert json_body["name"] == "Lumos"
+
+def test_html_response_helper(api, client):
+    @api.route("/html", allowed_methods=["get", "post"])
+    def html_handler(req, resp):
+        resp.html = api.template(
+            "index.html", context={"title": "Some Title", "name": "Some Name"}
+        )
+
+    response = client.get("http://testserver/html")
+    assert "text/html" in response.headers["Content-Type"]
+    assert "Some Title" in response.text
+    assert "Some Name" in response.text
+
+def test_text_response_helper(api, client):
+    response_text = "Plain text response from LumosWeb"
+
+    @api.route("/text", allowed_methods=["get", "post"])
+    def text_handler(req, resp):
+        resp.text = response_text
+
+    response = client.get("http://testserver/text")
+
+    assert "text/plain" in response.headers["Content-Type"]
+    assert response.text == response_text
+
+def test_manually_setting_body(api, client):
+    @api.route("/body", allowed_methods=["get", "post"])
+    def text_handler(req, resp):
+        resp.body = b"Byte body"
+        resp.content_type = "text/plain"
+
+    response = client.get("http://testserver/body")
+
+    assert "text/plain" in response.headers["Content-Type"]
+    assert response.text == "Byte body"

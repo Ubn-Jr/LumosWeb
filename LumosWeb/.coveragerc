@@ -1,2 +1,0 @@
-[run]
-omit = lumos_venv/*,test_lumos.py,conftest.py,app.py
