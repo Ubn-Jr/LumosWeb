@@ -1,9 +1,9 @@
-## LumosWeb
+## LumosWeb ![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
 
 - LumosWeb is web framework written in python
 - It's a WSGI framework and can be used with any WSGI application server such as Gunicorn.
 
-![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
+
 
 ## Installation
 ```shell

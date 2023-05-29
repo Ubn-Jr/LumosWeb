@@ -8,3 +8,6 @@ Notes.md
 **/.coverage
 **/.coveragerc
 
+LumosWeb.egg-info/
+build/
+dist/
