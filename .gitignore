@@ -1,6 +1,8 @@
 LumosWeb/lumos_venv
 Notes.md
 
+.vscode
+
 **/__pycache__/
 **/.pytest_cache/
 **/.coverage
