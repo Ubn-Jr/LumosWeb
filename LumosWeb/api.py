@@ -6,6 +6,7 @@ from wsgiadapter import WSGIAdapter as RequestsWSGIAdapter
 import os
 from jinja2 import Environment, FileSystemLoader
 from whitenoise import WhiteNoise
+from middleware import Middleware
 
 class API:
     def __init__(self, templates_dir="templates", static_dir="static"):
@@ -19,8 +20,16 @@ class API:
 
         self.whitenoise = WhiteNoise(self.wsgi_app, root=static_dir)
 
+        self.middleware = Middleware(self)    
+
     def __call__(self, environ, start_response):
-       return self.whitenoise(environ, start_response)
+        path_info = environ["PATH_INFO"]
+
+        if path_info.startswith("/static"):
+            environ["PATH_INFO"] = path_info[len("/static"):]
+            return self.whitenoise(environ, start_response)
+        
+        return self.middleware(environ, start_response)
     
     def wsgi_app(self, environ, start_response):
         request = Request(environ)
@@ -61,9 +70,7 @@ class API:
                     handler = getattr(handler(), request.method.lower(), None)  # To get the method of the class
                     if handler is None:
                         raise AttributeError("Method not allowed", request.method)
-                    handler(request, response, **kwargs)
-                else:
-                    handler(request, response, **kwargs)  # **kwargs is used to unpack the dictionary
+                handler(request, response, **kwargs)  # **kwargs is used to unpack the dictionary
             else:
                 self.default_response(response)
         except Exception as e:
@@ -74,6 +81,12 @@ class API:
 
         return response
     
+    # To create a test client for the API
+    def test_session(self, base_url="http://testserver"):
+        session = RequestsSession()
+        session.mount(prefix=base_url, adapter=RequestsWSGIAdapter(self))
+        return session
+    
     def template(self, template_name, context=None):
         if context is None:
             context = {}
@@ -81,11 +94,10 @@ class API:
     
     def add_exception_handler(self, exception_handler):
         self.exception_handler = exception_handler
+
+    def add_middleware(self, middleware_cls):
+        self.middleware.add(middleware_cls)
     
-    # To create a test client for the API
-    def test_session(self, base_url="http://testserver"):
-        session = RequestsSession()
-        session.mount(prefix=base_url, adapter=RequestsWSGIAdapter(self))
-        return session
+
 
     
