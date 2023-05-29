@@ -38,13 +38,17 @@ class API:
 
         return response(environ, start_response)
     
-    def add_route(self, path, handler):
+    def add_route(self, path, handler, allowed_methods=None):
         assert path not in self.routes, "You have already used this route, please choose another route :)"
-        self.routes[path] = handler  # path as an argument.
+        
+        if allowed_methods is None:
+            allowed_methods = ["get", "post", "put", "patch", "delete", "options"]  #  If allowed_methods is not specified by the user, we're allowing all methods to be used.
+
+        self.routes[path] = {"handler":handler, "allowed_methods": allowed_methods}  # path as an argument.
             
-    def route(self, path):
+    def route(self, path, allowed_methods=None):
         def wrapper(handler):
-            self.add_route(path, handler) 
+            self.add_route(path, handler, allowed_methods) 
             return handler
         return wrapper
         
@@ -63,12 +67,17 @@ class API:
     def handle_request(self, request):
         response = Response()
 
-        handler, kwargs = self.find_handler(request_path=request.path)
+        handler_data, kwargs = self.find_handler(request_path=request.path)
         try:
-            if handler is not None:
+            if handler_data is not None:
+                handler = handler_data["handler"]
+                allowed_methods = handler_data["allowed_methods"]
                 if inspect.isclass(handler):  # To check if the handler is a class
-                    handler = getattr(handler(), request.method.lower(), None)  # To get the method of the class
+                    handler = getattr(handler(), request.method.lower(), None)  # To get the method of the class, if handler() doesn't has the method attribute,getattr() returns None
                     if handler is None:
+                        raise AttributeError("Method not allowed", request.method)
+                else:
+                    if request.method.lower() not in allowed_methods:
                         raise AttributeError("Method not allowed", request.method)
                 handler(request, response, **kwargs)  # **kwargs is used to unpack the dictionary
             else:
