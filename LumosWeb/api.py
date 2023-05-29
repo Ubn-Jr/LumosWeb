@@ -40,10 +40,7 @@ class API:
     
     def add_route(self, path, handler, allowed_methods=None):
         assert path not in self.routes, "You have already used this route, please choose another route :)"
-        
-        if allowed_methods is None:
-            allowed_methods = ["get", "post", "put", "patch", "delete", "options"]  #  If allowed_methods is not specified by the user, we're allowing all methods to be used.
-
+      
         self.routes[path] = {"handler":handler, "allowed_methods": allowed_methods}  # path as an argument.
             
     def route(self, path, allowed_methods=None):

@@ -19,25 +19,25 @@ def _create_static(static_dir):
 # tests
 
 def test_basic_route_adding(api):
-    @api.route("/home")
+    @api.route("/home", allowed_methods=["get", "post"])
     def home(req, resp):
         resp.text = "Lumos is on!"
     with pytest.raises(AssertionError):
-        @api.route("/home")
+        @api.route("/home", allowed_methods=["get", "post"])
         def home2(req, resp):
             resp.text = "Lumos is off!"
 
 def test_lumos_test_client_can_send_requests(api, client):
     RESPONSE_TEXT = "Yes it can :)!"
 
-    @api.route("/lumos")
+    @api.route("/lumos", allowed_methods=["get", "post"])
     def lumos(req, resp):
         resp.text = RESPONSE_TEXT
 
     assert client.get("http://testserver/lumos").text == RESPONSE_TEXT
 
 def test_parametrized_route(api, client):
-    @api.route("/{name}")
+    @api.route("/{name}", allowed_methods=["get"])
     def hello(req, resp, name):
         resp.text = f"Hey {name}"
 
@@ -45,7 +45,7 @@ def test_parametrized_route(api, client):
     assert client.get("http://testserver/123").text == "Hey 123"
 
 def test_params_are_passed_correctly(api, client):
-    @api.route("/sum/{num_1:d}/{num_2:d}")
+    @api.route("/sum/{num_1:d}/{num_2:d}", allowed_methods=["get", "post"])
     def sum(req, resp, num_1, num_2):
         resp.text = f"{num_1} + {num_2} = {num_1 + num_2}"
 
@@ -61,7 +61,7 @@ def test_default_404_response(client):
 def test_class_based_handler_get(api, client):
     RESPONSE_TEXT = "This is a GET request"
 
-    @api.route("/book")
+    @api.route("/book", allowed_methods=["get", "post"])
     class BookResource:
         def get(self, req, resp):
             resp.text = RESPONSE_TEXT
@@ -71,7 +71,7 @@ def test_class_based_handler_get(api, client):
 def test_class_based_handler_post(api, client):
     RESPONSE_TEXT = "This is a POST request"
 
-    @api.route("/book")
+    @api.route("/book", allowed_methods=["get", "post"])
     class BookResource:
         def post(self, req, resp):
             resp.text = RESPONSE_TEXT
@@ -79,7 +79,7 @@ def test_class_based_handler_post(api, client):
     assert client.post("http://testserver/book").text == RESPONSE_TEXT
 
 def test_class_based_handler_not_allowed_method(api, client):
-    @api.route("/book")
+    @api.route("/book", allowed_methods=["get", "post"])
     class BookResource:
         def post(self, req, resp):
             resp.text = "Lumos!"
@@ -93,12 +93,12 @@ def test_alternative_route(api, client):
     def home(req, resp):
         resp.text = RESPONSE_TEXT
 
-    api.add_route("/alternative", home)
+    api.add_route("/alternative", home, allowed_methods=["get", "post"])
 
     assert client.get("http://testserver/alternative").text == RESPONSE_TEXT
 
 def test_template(api, client):
-    @api.route("/html")
+    @api.route("/html", allowed_methods=["get", "post"])
     def html_handler(req, resp):
         resp.body = api.template(
             "index.html", context={"title": "Some Title", "name": "Some Name"}
@@ -115,7 +115,7 @@ def test_custom_exception_handler(api, client):
 
     api.add_exception_handler(on_exception)
 
-    @api.route("/")
+    @api.route("/", allowed_methods=["get"])
     def index(req, resp):
         raise AttributeError()
 
@@ -155,7 +155,7 @@ def test_middleware_methods_are_called(api, client):
 
     api.add_middleware(CalledMiddleware)
 
-    @api.route("/")
+    @api.route("/", allowed_methods=["get"])
     def index(req, resp):
         resp.text = "Hello Middleware!"
 
@@ -173,11 +173,3 @@ def test_allowed_methods_for_function_based_handlers(api, client):
         client.get("http://testserver/home")
 
     assert client.post("http://testserver/home").text == "Hello"
-
-def test_allowed_methods_not_specified(api, client):
-    @api.route("/home")
-    def home(req, resp):
-        resp.text = "Hello"
-
-    assert client.get("http://testserver/home").text == "Hello"
-    assert client.put("http://testserver/home").text == "Hello"
