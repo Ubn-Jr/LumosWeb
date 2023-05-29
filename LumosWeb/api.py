@@ -1,4 +1,4 @@
-from webob import Request, Response
+from webob import Request
 from parse import parse
 import inspect
 from requests import Session as RequestsSession
@@ -7,6 +7,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 from whitenoise import WhiteNoise
 from middleware import Middleware
+from response import Response
 
 class API:
     def __init__(self, templates_dir="templates", static_dir="static"):
