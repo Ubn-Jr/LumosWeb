@@ -16,6 +16,13 @@ e.g. pip install LumosWeb==0.0.2
 
 ### Basic usage
 
+### Define App
+
+```python
+from LumosWeb.api import API()
+app = API()  # We created our api instance
+```
+
 ```python
 @app.route("/home", allowed_methods=["get"])
 def home(request, response):
@@ -37,6 +44,8 @@ app.add_route("/sample", handler, allowed_methods=["get", "post"])
 
 
 ```
+### Run Server
+> Lumosweb --app <module_name> run
 
 ### Unit Test
 
