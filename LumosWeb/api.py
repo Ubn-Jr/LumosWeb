@@ -107,7 +107,7 @@ class API:
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
         
-    def run(self, host="localhost", port=9000):
+    def run(self, host="localhost", port=8080):
         while True:
             try:
                 server = make_server(host, port, self)
