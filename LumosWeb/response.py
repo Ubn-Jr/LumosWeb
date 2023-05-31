@@ -30,3 +30,4 @@ class Response:
         if self.html is not None:
             self.body = self.html.encode()
             self.content_type = "text/html"
+    

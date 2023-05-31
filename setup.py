@@ -12,7 +12,7 @@ DESCRIPTION = "LumosWeb is web framework, simple and effective usage"
 EMAIL = "sumeyyedilaradogan@gmail.com"
 AUTHOR = "Sddilora"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "0.0.2"
+VERSION = "0.0.10"
 
 # Which packages are required for this module to be executed?
 REQUIRED = [
@@ -62,4 +62,8 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
     setup_requires=["wheel"],
+    entry_points={
+        'console_scripts': [
+             'Lumosweb = LumosWeb.cli:main',
+        ]},
 )

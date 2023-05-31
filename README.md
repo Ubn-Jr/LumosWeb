@@ -2,12 +2,14 @@
 
 - LumosWeb is web framework written in python
 - It's a WSGI framework and can be used with any WSGI application server such as Gunicorn.
+- [PyPI Release](https://pypi.org/project/LumosWeb/)
 
 
 
 ## Installation
 ```shell
-pip install LumosWeb
+pip install LumosWeb==<latest_version>
+e.g. pip install LumosWeb==0.0.2
 ```
 
 ## Getting Started

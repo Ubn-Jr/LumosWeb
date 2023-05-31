@@ -3,6 +3,7 @@ from parse import parse
 import inspect
 from requests import Session as RequestsSession
 from wsgiadapter import WSGIAdapter as RequestsWSGIAdapter
+from wsgiref.simple_server import make_server
 import os
 from jinja2 import Environment, FileSystemLoader
 from whitenoise import WhiteNoise
@@ -104,7 +105,10 @@ class API:
 
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
-    
+        
+    def run(self, host="localhost", port=9000):
+        server = make_server(host, port, self)
+        print(f"Starting Lumos server on {host}:{port}")
+        server.serve_forever()
 
 
-    
