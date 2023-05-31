@@ -1,24 +1,32 @@
 import sys
-from LumosWeb.api import API
+import os
+from LumosWeb.api import API  # Import the API class
+
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: LumosWeb --app <app_name> run")
+    if len(sys.argv) < 4 or sys.argv[1] != "--app":
+        print("Usage: Lumosweb --app <module_name> run")
         return
-
-    if sys.argv[1] != '--app':
-        print("Usage: LumosWeb --app <app_name> run")
-        return
-
+    
     app_module = sys.argv[2]
-    app = __import__(app_module)
-    app_instance = getattr(app, 'app', None)
+    app_path = os.path.abspath(os.path.join(os.getcwd(), app_module + ".py"))
 
-    if app_instance and isinstance(app_instance, API):
-        print(f"Serving Lumos app '{app_module}'")
-        app_instance.run_server()
+    if os.path.exists(app_path):
+        with open(app_path, "r") as file:
+            code = compile(file.read(), app_path, "exec")
+            namespace = {}
+            exec(code, namespace)
+            app = None
+            for obj in namespace.values():
+                if isinstance(obj, API):
+                    app = obj
+                    break
+            if app is not None:
+                app.run()
+            else:
+                raise AttributeError(f"No instance of 'API' found in module: {app_module}")
     else:
-        print(f"Invalid app file: {app_module}")
+        raise ImportError(f"Failed to import app module: {app_module}")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
