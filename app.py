@@ -1,14 +1,14 @@
-from api import API
-from middleware import Middleware
+from LumosWeb.api import API
+from LumosWeb.middleware import Middleware
 
 app = API()
 
-@app.route("/home", allowed_methods=["get", "post"])
+@app.route("/home", allowed_methods=["get"])
 def home(request, response):
-    if request.method == "get":
+    if request.method == "get" or "GET": ### This is a bug, as we are not checking for the request method TODO: Fix this
         response.text = "Hello from the HOME page"
     else:
-        raise AttributeError("Method not allowed.")
+        raise AttributeError("Method not allowed.",request.method)
 
 @app.route("/lumos", allowed_methods=["get", "post"])
 def about(request, response):
@@ -40,7 +40,7 @@ class BooksResource:
 #     resp.body = app.template("index.html", context={"name": "LumosWeb", "title":"Lights are on!"}).encode()  # Now we dont need to encode the body, as we are doing it in the Response class
 
 ## Adding a route without a decorator
-def handler(req, resp, allowed_methods=["get", "post"]):
+def handler(req, resp):
     resp.text = "We don't have to use decorators!"
 
 app.add_route("/sample", handler, allowed_methods=["get", "post"])
@@ -77,3 +77,5 @@ def json_handler(req, resp):
 @app.route("/text", allowed_methods=["get", "post"])
 def text_handler(req, resp):
     resp.text = "This is a plain text"
+
+app.run()

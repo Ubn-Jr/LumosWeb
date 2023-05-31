@@ -1,7 +1,13 @@
-LumosWeb/lumos_venv
+**/lumos_venv
 Notes.md
+
+.vscode
 
 **/__pycache__/
 **/.pytest_cache/
 **/.coverage
 **/.coveragerc
+
+LumosWeb.egg-info/
+build/
+dist/
