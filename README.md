@@ -1,4 +1,4 @@
-## LumosWeb ![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
+# LumosWeb ![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
 
 - To ensure compatibility and access the latest features and improvements, it is highly recommended to use version 1.0.0 or higher of the package. 
 - LumosWeb is web framework written in python
@@ -16,7 +16,7 @@ e.g. pip install LumosWeb==1.0.0
 
 ## Getting Started
 
-### Basic usage
+## Basic usage
 
 ### Define App
 
