@@ -110,17 +110,16 @@ class API:
     def run(self, host="localhost", port=8080):
         while True:
             try:
-                server = make_server(host, port, self)
-                break  # Exit the loop if the server is created successfully
-            except OSError as e:
-                if e.errno == socket.errno.EADDRINUSE:
-                    # Port is already in use, try another port
-                    port += 1
-                    print(f"Port {port-1} is not available, trying port {port}")
-                else:
-                    # Other error occurred, raise the exception
-                    raise
+                # Check if the port is available
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.bind((host, port))
+                sock.close()
+                break  # Exit the loop if the port is available
+            except OSError:
+                print(f"Port {port} is not available, trying the next port")
+                port += 1
 
+        server = make_server(host, port, self)
         actual_port = server.server_port
         print(f"Starting Lumos server on {host}:{actual_port}")
         server.serve_forever()
