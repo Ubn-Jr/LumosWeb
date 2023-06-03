@@ -233,7 +233,7 @@ def test_run_success(api):
         finally:
             sock.close()
 
-def test_run_multiple_attempts(api):
+def test_run_alternative_port(api):
     host = "localhost"
     port = 8080
 
