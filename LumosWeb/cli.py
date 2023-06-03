@@ -7,11 +7,14 @@ def main():
     if len(sys.argv) < 4 or sys.argv[1] != "--app":
         print("Usage: Lumosweb --app <module_name> run")
         return
-    
+
     app_module = sys.argv[2]
     app_path = os.path.abspath(os.path.join(os.getcwd(), app_module + ".py"))
-
+    app_directory = os.path.dirname(app_path)
+    
     if os.path.exists(app_path):
+        sys.path.append(app_directory)  # Add app directory to the system path
+        
         with open(app_path, "r") as file:
             code = compile(file.read(), app_path, "exec")
             namespace = {}

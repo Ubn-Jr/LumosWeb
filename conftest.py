@@ -1,6 +1,6 @@
 import pytest
 
-from api import API
+from LumosWeb.api import API
 
 @pytest.fixture
 def api():

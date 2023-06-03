@@ -12,7 +12,7 @@ DESCRIPTION = "LumosWeb is web framework, simple and effective usage"
 EMAIL = "sumeyyedilaradogan@gmail.com"
 AUTHOR = "Sddilora"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "0.0.12"
+VERSION = "1.0.1"
 
 # Which packages are required for this module to be executed?
 REQUIRED = [

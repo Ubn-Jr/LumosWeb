@@ -1,3 +1,4 @@
+import socket
 from webob import Request
 from parse import parse
 import inspect
@@ -106,9 +107,21 @@ class API:
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
         
-    def run(self, host="localhost", port=9000):
-        server = make_server(host, port, self)
-        print(f"Starting Lumos server on {host}:{port}")
-        server.serve_forever()
+    def run(self, host="localhost", port=8080):
+        while True:
+            try:
+                server = make_server(host, port, self)
+                break  # Exit the loop if the server is created successfully
+            except OSError as e:
+                if e.errno == socket.errno.EADDRINUSE:
+                    # Port is already in use, try another port
+                    port += 1
+                    print(f"Port {port-1} is not available, trying port {port}")
+                else:
+                    # Other error occurred, raise the exception
+                    raise
 
+        actual_port = server.server_port
+        print(f"Starting Lumos server on {host}:{actual_port}")
+        server.serve_forever()
 

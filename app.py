@@ -3,16 +3,16 @@ from LumosWeb.middleware import Middleware
 
 app = API()
 
+@app.route("/", allowed_methods=["GET", "post"])
+def about(request, response):
+    response.text = "Lights are on!"
+
 @app.route("/home", allowed_methods=["get"])
 def home(request, response):
     if request.method == "get" or "GET": ### This is a bug, as we are not checking for the request method TODO: Fix this
         response.text = "Hello from the HOME page"
     else:
         raise AttributeError("Method not allowed.",request.method)
-
-@app.route("/lumos", allowed_methods=["get", "post"])
-def about(request, response):
-    response.text = "Lights are on!"
 
 @app.route("/hello/{name}", allowed_methods=["get", "post"])
 def greeting(request, response, name):
