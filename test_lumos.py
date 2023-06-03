@@ -243,7 +243,7 @@ def test_run_alternative_port(api):
 
         try:
             api.run(host=host, port=port, timeout=1)  # Set a short timeout for testing purposes
-            assert api.is_running()
+            assert api.is_running()  # Check if the API is running (on another port, api.run changes the port if default port is not available) even though the default port is busy
         except Exception as exc:
             assert str(exc) == "No ports available to run the API"
         finally:

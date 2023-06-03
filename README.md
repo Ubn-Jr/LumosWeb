@@ -11,7 +11,7 @@
 ## Installation
 ```shell
 pip install LumosWeb==<latest_version>
-e.g. pip install LumosWeb==0.0.2
+e.g. pip install LumosWeb==1.0.0
 ```
 
 ## Getting Started
@@ -46,8 +46,10 @@ app.add_route("/sample", handler, allowed_methods=["get", "post"])
 
 
 ```
-### Run Server
+### Run Server 
+Go to the directory on Terminal where your api instance is located
 > Lumosweb --app <module_name> run
+And lights are on!
 
 ### Unit Test
 
