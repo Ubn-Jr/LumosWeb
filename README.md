@@ -1,8 +1,10 @@
 ## LumosWeb ![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
 
+- To ensure compatibility and access the latest features and improvements, it is highly recommended to use version 1.0.0 or higher of the package. 
 - LumosWeb is web framework written in python
 - It's a WSGI framework and can be used with any WSGI application server such as Gunicorn.
 - [PyPI Release](https://pypi.org/project/LumosWeb/)
+- [Sample App](https://github.com/Sddilora/LumosWeb-SampleApp)
 
 
 
@@ -24,7 +26,7 @@ app = API()  # We created our api instance
 ```
 
 ```python
-@app.route("/home", allowed_methods=["get"])
+@app.route("/home", allowed_methods=["get", "post", "put", "delete"])
 def home(request, response):
     if request.method == "get":
         response.text = "Hello from the HOME page"

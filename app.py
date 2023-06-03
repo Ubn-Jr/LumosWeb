@@ -3,7 +3,7 @@ from LumosWeb.middleware import Middleware
 
 app = API()
 
-@app.route("/", allowed_methods=["get", "post"])
+@app.route("/", allowed_methods=["GET", "post"])
 def about(request, response):
     response.text = "Lights are on!"
 
