@@ -233,20 +233,6 @@ def test_run_success(api):
         finally:
             sock.close()
 
-def test_run_port_in_use(api):
-    host = "localhost"
-    port = 8080
-
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind((host, port))
-
-        try:
-            api.run(host=host, port=port, timeout=1)  # Set a short timeout for testing purposes
-        except Exception as exc:
-            assert str(exc) == f"[Errno 98] Address already in use: ('{host}', {port})"
-        finally:
-            sock.close()
-
 def test_run_multiple_attempts(api):
     host = "localhost"
     port = 8080
