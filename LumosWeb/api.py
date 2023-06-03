@@ -1,3 +1,4 @@
+import select
 import socket
 from webob import Request
 from parse import parse
@@ -24,6 +25,8 @@ class API:
         self.whitenoise = WhiteNoise(self.wsgi_app, root=static_dir)
 
         self.middleware = Middleware(self)    
+
+        self._server = None
 
     def __call__(self, environ, start_response):
         path_info = environ["PATH_INFO"]
@@ -107,7 +110,11 @@ class API:
     def add_middleware(self, middleware_cls):
         self.middleware.add(middleware_cls)
         
-    def run(self, host="localhost", port=8080):
+    def is_running(self):
+        return self._server is not None and not self._server._BaseServer__is_shut_down.is_set()
+    
+    def run(self, host="localhost", port=8080, timeout=None):
+        attempts = 0
         while True:
             try:
                 # Check if the port is available
@@ -117,10 +124,22 @@ class API:
                 break  # Exit the loop if the port is available
             except OSError:
                 print(f"Port {port} is not available, trying the next port")
+                attempts += 1
                 port += 1
-
+                if attempts > 10:
+                    raise Exception("No ports available to run the API")
+                
         server = make_server(host, port, self)
+        self._server = server
         actual_port = server.server_port
         print(f"Starting Lumos server on {host}:{actual_port}")
-        server.serve_forever()
 
+        if timeout is None:
+            server.serve_forever()
+        else:
+            while True:
+                r, _, _ = select.select([server], [], [], timeout)
+                if r:
+                    server.handle_request()
+                else:
+                    break

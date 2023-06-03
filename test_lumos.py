@@ -1,3 +1,4 @@
+import socket
 import pytest
 
 from LumosWeb.api import API
@@ -218,3 +219,59 @@ def test_manually_setting_body(api, client):
 
     assert "text/plain" in response.headers["Content-Type"]
     assert response.text == "Byte body"
+
+def test_run_success(api):
+    host = "localhost"
+    port = 8080
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind((host, port))
+
+        try:
+            api.run(host=host, port=port, timeout=1)  # Set a short timeout for testing purposes
+            assert api.is_running()
+        finally:
+            sock.close()
+
+def test_run_port_in_use(api):
+    host = "localhost"
+    port = 8080
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind((host, port))
+
+        try:
+            api.run(host=host, port=port, timeout=1)  # Set a short timeout for testing purposes
+        except Exception as exc:
+            assert str(exc) == f"[Errno 98] Address already in use: ('{host}', {port})"
+        finally:
+            sock.close()
+
+def test_run_multiple_attempts(api):
+    host = "localhost"
+    port = 8080
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind((host, port))
+
+        try:
+            api.run(host=host, port=port, timeout=2)  # Set a short timeout for testing purposes
+            assert api.is_running()
+
+            # Start the server again on a different port
+            api.run(host=host, port=port + 1, timeout=1)  # Set a short timeout for testing purposes
+            assert api.is_running()
+        finally:
+            sock.close()
+
+def test_run_exception_other_error(api):
+    host = "localhost"
+    port = 8080
+
+    try:
+        with pytest.raises(Exception):
+            # Simulate a different exception by passing an invalid value for `host`
+            api.run(host=None, port=port, timeout=1)  # Set a short timeout for testing purposes
+    finally:
+        assert not api.is_running()
+
