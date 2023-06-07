@@ -47,7 +47,7 @@ app.add_route("/sample", handler, allowed_methods=["get", "post"])
 
 ```
 ### Run Server 
-GNavigate to the directory in the Terminal where the file of your API instance is located
+Navigate to the directory in the Terminal where the file of your API instance is located
 > Lumosweb --app <module_name> run
 
 And lights are on!
