@@ -53,6 +53,16 @@ class Database:
 
         return instance
     
+    def update(self, instance):
+        sql, values = instance._get_update_sql()
+        self.conn.execute(sql, values)
+        self.conn.commit()
+
+    def delete(self, table, id):
+        sql, params = table._get_delete_sql(id)
+        self.conn.execute(sql, params)
+        self.conn.commit()
+
 class Table:
     def __init__(self, **kwargs):
         self._data= {
@@ -143,6 +153,37 @@ class Table:
         super().__setattr__(key, value)
         if key in self._data:
             self._data[key] = value
+
+    def _get_update_sql(self):
+        UPDATE_SQL = 'UPDATE {name} SET {fields} WHERE id = ?'
+        cls = self.__class__
+        fields = []
+        values = []
+
+        for name, field in inspect.getmembers(cls):
+            if isinstance(field, Column):
+                fields.append(name)
+                values.append(getattr(self, name))
+            elif isinstance(field, ForeignKey):
+                fields.append(name + "_id")
+                values.append(getattr(self, name).id)
+
+        values.append(getattr(self, "id"))
+
+        sql = UPDATE_SQL.format(
+            name=cls.__name__.lower(),
+            fields=", ".join([f"{field} = ?" for field in fields])
+            )
+        
+        return sql, values
+    
+    @classmethod
+    def _get_delete_sql(cls, id):
+        DELETE_SQL = "DELETE FROM {name} WHERE id = ?"
+        sql = DELETE_SQL.format(name=cls.__name__.lower())
+
+        return sql, [id]
+            
     
 class Column:
     def __init__(self, column_type):

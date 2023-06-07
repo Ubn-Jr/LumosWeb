@@ -1,5 +1,7 @@
 import sqlite3
 
+import pytest
+
 def test_create_db(db):
     assert isinstance(db.conn, sqlite3.Connection)
     assert db.tables == []
@@ -126,3 +128,30 @@ def test_query_all_books(db, Author, Book):
     assert books[0].author.age == 54
     assert books[0].author.id == 1
     assert type(books[0]) == Book
+
+def test_update_author(db, Author):
+    db.create(Author)
+
+    rowling = Author(name="J. K. Rowling", age=54)
+    db.save(rowling)
+
+    rowling.name = "J. K. Rowling (Joanne)"
+    rowling.age = 55
+    db.update(rowling)
+
+    rowling_from_db = db.get(Author, id = rowling.id)
+
+    assert rowling_from_db.name == "J. K. Rowling (Joanne)"
+    assert rowling_from_db.age == 55
+
+def test_delete_author(db, Author):
+    db.create(Author)
+
+    rowling = Author(name="J. K. Rowling", age=54)
+    db.save(rowling)
+
+    db.delete(Author, id=1)
+
+    with pytest.raises(Exception):
+        db.get(Author, 1)
+    
