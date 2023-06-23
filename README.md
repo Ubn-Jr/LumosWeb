@@ -142,9 +142,10 @@ app.add_middleware(SimpleCustomMiddleware)
  ### Database
  You can create custom middleware classes by inheriting from the `LumosWeb.orm.Database` class
  First create models file and create a class for each table in the database
- 
- models.py
+
  ```python
+# models.py
+
 from LumosWeb.orm import Table, Column
 class Book(Table):
     author = Column(str)
@@ -152,8 +153,9 @@ class Book(Table):
  ```
 Then create a storage file and import the models
 
-storage.py
 ```python
+# storage.py
+
 from models import Book
 
 class BookStorage:
@@ -186,8 +188,9 @@ class BookStorage:
 ```
 Then use them
 
-app.py
  ```python
+ # app.py
+
 from LumosWeb.orm import Database
 db = Database("./lumos.db")  # lumos.db is the name of the database file
 db.create(Book)
