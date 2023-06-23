@@ -47,8 +47,9 @@ app.add_route("/sample", handler, allowed_methods=["get", "post"])
 
 ```
 ### Run Server 
-Go to the directory on Terminal where your api instance is located
+Navigate to the directory in the Terminal where the file of your API instance is located
 > Lumosweb --app <module_name> run
+
 And lights are on!
 
 ### Unit Test
@@ -136,4 +137,83 @@ class SimpleCustomMiddleware(Middleware):
 
 
 app.add_middleware(SimpleCustomMiddleware)
+```
+
+ ### Database
+ You can create custom middleware classes by inheriting from the `LumosWeb.orm.Database` class
+ First create models file and create a class for each table in the database
+
+ ```python
+# models.py
+
+from LumosWeb.orm import Table, Column
+
+class Book(Table):
+    author = Column(str)
+    name = Column(str)
+ ```
+Then create a storage file and import the models
+
+```python
+# storage.py
+
+from models import Book
+
+class BookStorage:
+    _id = 0
+
+    def __init__(self):
+        self._books = []
+
+    def all(self):
+        return [book._asdict() for book in self._books]
+
+    def get(self, id: int):
+        for book in self._books:
+            if book.id == id:
+                return book
+
+        return None
+
+    def create(self, **kwargs):
+        self._id += 1
+        kwargs["id"] = self._id
+        book = Book(**kwargs)
+        self._books.append(book)
+        return book
+
+    def delete(self, id):
+        for ind, book in enumerate(self._books):
+            if book.id == id:
+                del self._books[ind]
+```
+Now you can use them
+
+ ```python
+ # app.py
+
+from LumosWeb.orm import Database
+
+db = Database("./lumos.db")  # lumos.db is the name of the database file
+# which will be created in the current directory (if it doesn't exist already)
+db.create(Book)
+
+@app.route("/", allowed_methods=["get"])
+def index(req, resp):
+    books = db.all(Book)
+    resp.html = app.template("index.html", context={"books": books})
+
+@app.route("/books", allowed_methods=["post"])
+def create_book(req, resp):
+    book = Book(**req.POST)  # Creates a Book instance with the given data in the request.
+    db.save(book)
+
+    resp.status_code = 201  # Created
+    resp.json = {"name": book.name, "author": book.author}
+
+@app.route("/books/{id:d}", allowed_methods=["delete"])
+def delete_book(req, resp, id):
+    db.delete(Book, id=id)
+    resp.status_code = 204  # No content (resource has successfully been deleted.)
+
 ```
