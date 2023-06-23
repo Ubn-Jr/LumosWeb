@@ -186,7 +186,7 @@ class BookStorage:
             if book.id == id:
                 del self._books[ind]
 ```
-Then use them
+Now you can use them
 
  ```python
  # app.py
