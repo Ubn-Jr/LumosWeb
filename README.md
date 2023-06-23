@@ -147,6 +147,7 @@ app.add_middleware(SimpleCustomMiddleware)
 # models.py
 
 from LumosWeb.orm import Table, Column
+
 class Book(Table):
     author = Column(str)
     name = Column(str)
@@ -192,6 +193,7 @@ Now you can use them
  # app.py
 
 from LumosWeb.orm import Database
+
 db = Database("./lumos.db")  # lumos.db is the name of the database file
 # which will be created in the current directory (if it doesn't exist already)
 db.create(Book)
