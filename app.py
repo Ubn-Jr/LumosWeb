@@ -78,4 +78,8 @@ def json_handler(req, resp):
 def text_handler(req, resp):
     resp.text = "This is a plain text"
 
+@app.route("/serve/md-files", allowed_methods=["get", "post"])
+def about(request, response):
+    response.html = app.template("index.md")
+
 app.run()

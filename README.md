@@ -84,13 +84,17 @@ The default folder for templates is `templates`. You can change it when initiali
 ```python
 app = API(templates_dir="templates_dir_name")
 ```
-Then you can use HTML files in that folder like so in a handler:
+Then you can use HTML or Markdown files in that folder like so in a handler:
 
 ```python
 @app.route("/show/template")
 def handler_with_template(req, resp):
     resp.html = app.template(
         "example.html", context={"title": "Awesome Framework", "body": "welcome to the future!"})
+
+@app.route("/md-files", allowed_methods=["get"])
+def index(req, resp):
+    resp.html = app.template("index.md")
 ```
 
 ## Static Files
