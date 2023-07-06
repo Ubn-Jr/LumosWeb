@@ -12,7 +12,7 @@ DESCRIPTION = "LumosWeb is web framework, simple and effective usage"
 EMAIL = "sumeyyedilaradogan@gmail.com"
 AUTHOR = "Sddilora"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 # Which packages are required for this module to be executed?
 REQUIRED = [
@@ -22,6 +22,8 @@ REQUIRED = [
     "requests-wsgi-adapter==0.4.1",
     "WebOb==1.8.7",
     "whitenoise==6.4.0",
+    "Markdown==3.4.3",
+    "Pygments==2.15.1"
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))

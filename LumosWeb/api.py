@@ -11,6 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 from whitenoise import WhiteNoise
 from .middleware import Middleware
 from .response import Response
+import markdown
 
 class API:
     def __init__(self, templates_dir="templates", static_dir="static"):
@@ -102,7 +103,20 @@ class API:
     def template(self, template_name, context=None):
         if context is None:
             context = {}
-        return self.templates_env.get_template(template_name).render(**context)
+
+        template = self.templates_env.get_template(template_name)
+        rendered_template = template.render(**context)
+
+        # Check if the file ends with .md extension
+        if template_name.endswith('.md'):
+            # Convert the rendered template to HTML using Markdown
+            converted_html = markdown.markdown(rendered_template, extensions=['fenced_code', 'codehilite', 'tables'])
+            css_path = os.path.join(os.path.dirname(__file__), 'static/styles.css')
+            with open(css_path, encoding="utf16") as css_file:
+                css_content = css_file.read()
+            rendered_template = f"<style>{css_content}</style>{converted_html}"
+        
+        return rendered_template
     
     def add_exception_handler(self, exception_handler):
         self.exception_handler = exception_handler
