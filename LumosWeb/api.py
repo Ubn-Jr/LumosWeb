@@ -111,15 +111,10 @@ class API:
         if template_name.endswith('.md'):
             # Convert the rendered template to HTML using Markdown
             converted_html = markdown.markdown(rendered_template, extensions=['fenced_code', 'codehilite', 'tables'])
-
-            # Read the content of convert.html
-            convert_template_path = os.path.join(os.path.dirname(__file__), 'md_to_html.html')
-            with open(convert_template_path, 'r') as convert_template_file:
-                convert_template_content = convert_template_file.read()
-
-            # Replace the placeholder with the converted HTML content
-            rendered_convert_template = convert_template_content.replace('{{ markdown_content }}', converted_html)
-            return rendered_convert_template
+            css_path = os.path.join(os.path.dirname(__file__), 'static/styles.css')
+            with open(css_path, encoding="utf16") as css_file:
+                css_content = css_file.read()
+            rendered_template = f"<style>{css_content}</style>{converted_html}"
         
         return rendered_template
     
