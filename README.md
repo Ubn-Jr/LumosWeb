@@ -1,5 +1,7 @@
 # LumosWeb ![PyPI](https://img.shields.io/pypi/v/LumosWeb.svg)
 
+<img width="336" height="164" alt="LumosWeb, Custom Python Web Framework Python, WSGI Developed lightweight web framework from scratch inspired by Flask_Django architecture Implemented routing, middleware system, template engine, " src="https://github.com/user-attachments/assets/85085011-2db1-4cd4-973e-c613c185e041" />
+
 - To ensure compatibility and access the latest features and improvements, it is highly recommended to use version 1.0.0 or higher of the package. 
 - LumosWeb is web framework written in python
 - It's a WSGI framework and can be used with any WSGI application server such as Gunicorn.
@@ -221,3 +223,4 @@ def delete_book(req, resp, id):
     resp.status_code = 204  # No content (resource has successfully been deleted.)
 
 ```
+
